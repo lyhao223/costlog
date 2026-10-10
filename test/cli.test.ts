@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, utimesSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -143,25 +143,39 @@ test('statusline prints one line with today and any open window', () => {
 });
 
 // The hook runs after every turn: it must never fail the session, pile up work, or leave a half-written line.
-test('status line hook refreshes at most once a minute and survives a missing binary', { skip: process.platform === 'win32' }, () => {
+test('status line hook refreshes at most once a minute and survives a missing binary', { skip: process.platform === 'win32' }, async () => {
   const dir = mkdtempSync(join(tmpdir(), 'costlog-hook-'));
   const hook = join(repo, 'hooks/refresh-statusline.sh');
   const file = join(dir, 'statusline.txt');
   const fire = (bin: string) => spawnSync('sh', [hook], { env: { ...env, COSTLOG_CACHE_DIR: dir, COSTLOG_BIN: bin }, encoding: 'utf8' });
   const cli = `${process.execPath} ${join(repo, 'src/cli.ts')}`;
+  // The refresh is detached from the hook, so its result arrives a moment after the hook returns.
+  const settled = async (done: () => boolean) => {
+    for (let i = 0; i < 100 && !done(); i++) await new Promise((resolve) => setTimeout(resolve, 100));
+  };
+  const read = () => (existsSync(file) ? readFileSync(file, 'utf8') : '');
+  const noTmp = () => !readdirSync(dir).some((name) => name.endsWith('.tmp'));
 
   assert.equal(fire(cli).status, 0);
-  assert.match(readFileSync(file, 'utf8'), /^\$\d+\.\d\d API-eq today/);
+  await settled(() => /API-eq today/.test(read()));
+  assert.match(read(), /^\$\d+\.\d\d API-eq today/);
+  await settled(noTmp);
+
   writeFileSync(file, 'fresh\n');
   fire(cli);
-  assert.equal(readFileSync(file, 'utf8'), 'fresh\n');
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  assert.equal(read(), 'fresh\n');
 
   utimesSync(file, new Date(0), new Date(0));
   assert.equal(fire('/nonexistent/costlog').status, 0);
-  assert.equal(readFileSync(file, 'utf8'), 'fresh\n');
-  assert.deepEqual(readdirSync(dir).filter((name) => name.endsWith('.tmp')), []);
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  await settled(noTmp);
+  assert.equal(read(), 'fresh\n');
+  assert.ok(noTmp());
+
   fire(cli);
-  assert.match(readFileSync(file, 'utf8'), /API-eq today/);
+  await settled(() => /API-eq today/.test(read()));
+  assert.match(read(), /API-eq today/);
 });
 
 // Ignoring a bad price file would print costs that look valid.
