@@ -8,11 +8,10 @@ Reads Claude Code, Codex CLI, GitHub Copilot CLI and Cursor data today.
 
 ## Why not ccusage or tokscale
 
-Both are good, read more agents, and scan faster the first time. costlog is narrower and does five things they did not when compared in October 2026 (ccusage 20.0.28, tokscale 4.18.0):
+Both are good, read more agents, and scan faster the first time. costlog is narrower and does four things they did not when compared in October 2026 (ccusage 20.0.28, tokscale 4.18.0):
 
 - **It tells you what a plan was worth.** Give it what you pay, `--plan-price claude=200,codex=200`, and it prints the API-equivalent cost of each agent against that price for the period. This works for every agent it prices.
 - **For Codex, it reads the plan from the log.** Codex records the plan each session ran on, so costlog shows how much of the total drew on plan quota. Claude Code and Copilot CLI do not record a plan, so this part is Codex only.
-- **It prices Codex Fast mode per request for every model that publishes a rate.** ccusage applies no Fast multiplier to three current models ([ccusage/ccusage#1852](https://github.com/ccusage/ccusage/issues/1852)).
 - **It shows Codex quota windows without a network call**, for every account that ran on the machine. `ccusage blocks` covers Claude Code only, and `tokscale usage` needs the network and reports the signed-in account.
 - **It labels what it cannot know.** A model with no price is `n/a`, never `$0`. Cursor's partial token data is never priced.
 
@@ -179,7 +178,7 @@ node src/cli.ts by model --json --since 2026-09-01 --until 2026-09-30
 
 ## Accuracy
 
-On one month of real logs, token totals are within 0.25% of ccusage 20.0.28 for Claude Code and 0.04% for Codex. Cost is within 0.1% for Claude Code. For Codex it matches to the cent on the models where both tools apply the same Fast-mode rule, and differs on three models where ccusage applies none ([ccusage/ccusage#1852](https://github.com/ccusage/ccusage/issues/1852)).
+On one month of real logs, token totals are within 0.25% of ccusage 20.0.28 for Claude Code and 0.04% for Codex. Cost is within 0.1% for Claude Code. For Codex it matches to the cent on the two largest models. The comparison turned up three models where ccusage 20.0.28 applied no Fast-mode multiplier; that was reported as [ccusage/ccusage#1852](https://github.com/ccusage/ccusage/issues/1852) and fixed upstream the same day, so later ccusage releases should agree on those too.
 
 ## Adding an agent
 

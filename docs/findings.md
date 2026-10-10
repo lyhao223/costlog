@@ -20,7 +20,7 @@ One month of the same logs, ccusage 20.0.28:
 | Claude Code | -0.18% | -0.05% | -0.25% | -0.02% | -0.09% |
 | Codex | -0.04% | -0.01% | -0.01% | 0 | +1.16% on models both tools price |
 
-The two largest Codex models match ccusage to within 0.002% of their cost. The whole Codex gap sits in `gpt-6-sol`, `gpt-6.1-sol` and `gpt-6-luna`, where ccusage applies no Fast-mode multiplier: its fast/standard cost ratio is 2.000 for the models in its override table and 1.000 for these three. OpenAI documents 2x for all three. Reported as [ccusage/ccusage#1852](https://github.com/ccusage/ccusage/issues/1852).
+The two largest Codex models match ccusage to within 0.002% of their cost. The whole Codex gap sat in `gpt-6-sol`, `gpt-6.1-sol` and `gpt-6-luna`, where ccusage 20.0.28 applied no Fast-mode multiplier: its fast/standard cost ratio was 2.000 for the models in its override table and 1.000 for these three. OpenAI documents 2x for all three. Reported as [ccusage/ccusage#1852](https://github.com/ccusage/ccusage/issues/1852) and fixed in ccusage the same day (pull request 1855, merged 2026-10-10, after 20.0.28).
 
 ccusage and tokscale disagreed with each other by about 7% in dollars on the same month while agreeing within 0.3% on tokens. The difference comes from how each decides which requests ran in Fast mode and from the long-context tier, so neither is shown to be wrong.
 
