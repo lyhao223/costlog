@@ -1,0 +1,17 @@
+{
+  "name": "costlog",
+  "version": "0.1.0",
+  "description": "What your coding-agent usage would cost on the API, whether your plan paid off, and Codex quota windows. Local logs only.",
+  "author": {
+    "name": "haoly"
+  },
+  "repository": "https://github.com/lyhao223/costlog",
+  "license": "MIT",
+  "keywords": [
+    "cost",
+    "usage",
+    "tokens",
+    "codex",
+    "quota"
+  ]
+}

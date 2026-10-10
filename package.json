@@ -1,0 +1,46 @@
+{
+  "name": "costlog",
+  "version": "0.1.0",
+  "description": "What your coding-agent usage would cost on the API, whether your plan paid off, and Codex quota windows. Reads local logs only.",
+  "keywords": [
+    "claude-code",
+    "codex",
+    "copilot",
+    "cursor",
+    "tokens",
+    "cost",
+    "usage",
+    "quota",
+    "cli"
+  ],
+  "license": "MIT",
+  "author": "haoly",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lyhao223/costlog.git"
+  },
+  "homepage": "https://github.com/lyhao223/costlog#readme",
+  "bugs": "https://github.com/lyhao223/costlog/issues",
+  "type": "module",
+  "bin": {
+    "costlog": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "data"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/cli.ts",
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc",
+    "test": "tsc && node --test \"test/*.test.ts\" && node scripts/anonymize.mjs --self-test",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.43",
+    "typescript": "7.0.2"
+  }
+}

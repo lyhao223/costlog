@@ -1,0 +1,12 @@
+{
+  "name": "costlog",
+  "description": "The costlog plugin for Claude Code",
+  "owner": { "name": "haoly" },
+  "plugins": [
+    {
+      "name": "costlog",
+      "source": ".",
+      "description": "Report API-equivalent cost, plan value and Codex quota from local agent logs"
+    }
+  ]
+}
